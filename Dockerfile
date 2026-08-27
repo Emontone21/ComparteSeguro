@@ -1,9 +1,24 @@
-# --- Etapa de compilación -------------------------------------------------
+# --- De dónde salen las piezas ---------------------------------------------
+#
+# Estos tres valores existen para poder construir en una red que no llega a
+# Docker Hub, que es la situación habitual en una red corporativa. Se apuntan
+# a un registro y a un proxy de módulos internos desde el .env, sin editar
+# este archivo. Ver "Cuando la red no llega a Docker Hub" en el README.
+ARG IMAGEN_GO=golang:1.25-alpine
+ARG IMAGEN_BASE=alpine:3.21
+
+
+# --- Etapa de compilación ---------------------------------------------------
 #
 # El driver de SQLite es Go puro, así que se compila con CGO_ENABLED=0 y sale
 # un binario estático: no depende de ninguna biblioteca del sistema y no hace
 # falta un compilador de C en ninguna etapa.
-FROM golang:1.25-alpine AS compilacion
+FROM ${IMAGEN_GO} AS compilacion
+
+# De dónde bajar las dependencias de Go. Apuntándolo a un proxy de módulos
+# interno, la compilación no necesita salir a internet.
+ARG GOPROXY=https://proxy.golang.org,direct
+ENV GOPROXY=${GOPROXY}
 
 WORKDIR /origen
 
@@ -24,7 +39,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 
 
 # --- Imagen final ----------------------------------------------------------
-FROM alpine:3.21
+FROM ${IMAGEN_BASE}
 
 # Usuario sin privilegios. El directorio de datos se crea acá y con su dueño
 # puesto: cuando Docker monte encima un volumen con nombre, hereda estos

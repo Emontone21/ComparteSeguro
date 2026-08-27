@@ -39,7 +39,7 @@ facilidad de despliegue on-premise. Cada una empujó en la misma dirección.
 ### Pocas dependencias
 
 El proyecto tiene **una sola dependencia directa**: `modernc.org/sqlite`. Todo
-lo demás —el servidor HTTP, el rEMPRESAo, el generador de números aleatorios
+lo demás —el servidor HTTP, el ruteo, el generador de números aleatorios
 criptográfico, el manejo de JSON, el registro de eventos y el framework de
 tests— viene con Go.
 
@@ -348,7 +348,11 @@ el ejemplo en [Despliegue](#despliegue).
 
 ### Requisitos
 
-- Docker con el plugin `compose`.
+- Docker con el plugin **Compose v2** (el comando `docker compose`, con
+  espacio). No hace falta instalar Go, Node ni ninguna otra cosa: todo se
+  compila dentro de la imagen.
+- Que la máquina donde se construye llegue a Docker Hub, o un registro interno
+  equivalente. Ver la sección siguiente si no es el caso.
 - Un certificado TLS para el nombre interno que se le vaya a dar.
 
 ### Puesta en marcha
@@ -359,6 +363,10 @@ cd comparteseguro
 docker compose up -d --build
 ```
 
+También sirve descargar el repositorio como ZIP y descomprimirlo: no hace falta
+tener git. Lo único que importa es pararse en la carpeta que contiene el
+`docker-compose.yml`.
+
 Listo. La aplicación queda escuchando en el puerto 8080 y las notas se guardan
 en un volumen de Docker llamado `comparteseguro-datos`.
 
@@ -368,7 +376,7 @@ del `docker-compose.yml`:
 ```bash
 # .env
 PORT=9000
-RATE_LIMIT_PER_MINEMPRESA=30
+RATE_LIMIT_PER_MINUTE=30
 TRUST_PROXY=true
 ```
 
@@ -377,6 +385,69 @@ Y se vuelve a levantar:
 ```bash
 docker compose up -d
 ```
+
+### Cuando la red no llega a Docker Hub
+
+En una red corporativa la construcción suele fallar así:
+
+```
+failed to fetch anonymous token: Get "https://auth.docker.io/token?...":
+dial tcp 172.64.144.78:443: i/o timeout
+```
+
+Un **tiempo de espera agotado**, y no un rechazo, es la firma de un firewall o
+un proxy que descarta la conexión en silencio. La aplicación no tiene nada que
+ver: es Docker que no puede bajar sus imágenes base. Hay tres salidas, de la
+más simple a la más definitiva.
+
+**1. Declarar el proxy corporativo en Docker Desktop.** Es lo primero que hay
+que probar en una máquina de la empresa. En Docker Desktop: *Settings →
+Resources → Proxies → Manual proxy configuration*, con la dirección del proxy
+de la organización. Después hay que reiniciar Docker Desktop, no solo cerrar la
+ventana. Si el navegador de esa misma máquina abre `hub.docker.com` pero Docker
+no, es casi seguro esto.
+
+**2. Apuntar a un registro y a un proxy de módulos internos.** Si la
+organización tiene Artifactory, Nexus o Harbor, se declaran en el `.env` sin
+tocar ningún archivo del proyecto:
+
+```bash
+# .env
+IMAGEN_GO=registro.interno/library/golang:1.25-alpine
+IMAGEN_BASE=registro.interno/library/alpine:3.21
+GOPROXY=https://registro.interno/artifactory/api/go/go
+```
+
+**3. Construir afuera y transportar la imagen.** Funciona siempre, incluso con
+el servidor completamente aislado. En una máquina con internet:
+
+```bash
+docker compose build
+docker save comparteseguro:latest | gzip > comparteseguro.tar.gz
+```
+
+Se copia ese archivo al servidor —por red interna, por pendrive, como sea— y
+ahí:
+
+```bash
+gunzip -c comparteseguro.tar.gz | docker load
+docker compose up -d          # sin --build
+```
+
+Una vez cargada la imagen, el servidor no necesita internet nunca más: la
+aplicación no hace ninguna llamada saliente.
+
+### Si el servidor usa SELinux
+
+En RHEL, Rocky o CentOS con SELinux en *enforcing*, el montaje de la carpeta de
+marca puede dar permiso denegado. Se resuelve agregándole la etiqueta `z` en el
+`docker-compose.yml`:
+
+```yaml
+- ./marca:/marca:ro,z
+```
+
+En Debian, Ubuntu, Windows o macOS no hace falta.
 
 ### Comprobar que arrancó bien
 
@@ -443,13 +514,22 @@ Todo se configura con variables de entorno.
 | `BIND_ADDR` | `0.0.0.0` | Interfaz de escucha. |
 | `DB_PATH` | `/datos/comparteseguro.db` | Archivo SQLite. Tiene que estar en el volumen. |
 | `MAX_NOTE_BYTES` | `102400` | Tamaño máximo de una nota, en bytes de texto sin cifrar. Se valida en el servidor y también alimenta el contador que ve el usuario. |
-| `RATE_LIMIT_PER_MINEMPRESA` | `20` | Enlaces por minuto que puede crear una misma IP, de forma sostenida. |
+| `RATE_LIMIT_PER_MINUTE` | `20` | Enlaces por minuto que puede crear una misma IP, de forma sostenida. |
 | `RATE_LIMIT_BURST` | `10` | Ráfaga tolerada por encima de ese ritmo. |
 | `TRUST_PROXY` | `false` | Si hay un proxy inverso de confianza delante. Ver la advertencia. |
 | `LOG_FORMAT` | `texto` | `texto` o `json`. |
 | `ORG_NAME` | `EMPRESA` | Nombre que se muestra en la cabecera. |
 | `ORG_LOCATION` | `Montevideo, Uruguay` | Acompaña al nombre en la cabecera. |
 | `BRANDING_DIR` | `/marca` | Carpeta con el logo y la foto oficiales. Ver [Marca institucional](#marca-institucional). |
+
+Estas tres no configuran la aplicación sino de dónde salen las piezas al
+construir la imagen, y solo hacen falta si la red no llega a Docker Hub:
+
+| Variable | Por omisión | Para qué sirve |
+|---|---|---|
+| `IMAGEN_GO` | `golang:1.25-alpine` | Imagen con la que se compila. |
+| `IMAGEN_BASE` | `alpine:3.21` | Imagen sobre la que corre el binario. |
+| `GOPROXY` | `https://proxy.golang.org,direct` | De dónde bajar las dependencias de Go. |
 
 ### Advertencia sobre `TRUST_PROXY`
 

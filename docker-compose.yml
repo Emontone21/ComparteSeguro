@@ -7,7 +7,15 @@
 
 services:
   comparteseguro:
-    build: .
+    build:
+      context: .
+      args:
+        # Si la red no llega a Docker Hub, apuntá estas dos a un registro
+        # interno desde el .env. Ver "Cuando la red no llega a Docker Hub"
+        # en el README.
+        IMAGEN_GO: "${IMAGEN_GO:-golang:1.25-alpine}"
+        IMAGEN_BASE: "${IMAGEN_BASE:-alpine:3.21}"
+        GOPROXY: "${GOPROXY:-https://proxy.golang.org,direct}"
     image: comparteseguro:latest
     container_name: comparteseguro
     restart: unless-stopped
