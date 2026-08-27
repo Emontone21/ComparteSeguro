@@ -16,3 +16,7 @@ datos/
 # Binarios compilados a mano.
 comparteseguro
 /salida/
+
+# El logo y la foto se montan como volumen al desplegar, no se hornean en la
+# imagen. Ver marca/README.md.
+marca/
