@@ -21,6 +21,31 @@ Si están las dos versiones de una ranura, gana la primera de la lista. Si una
 ranura queda vacía, la aplicación se ve igual de terminada: sin logo muestra el
 nombre de la organización en texto, y sin foto el fondo queda liso.
 
+## Lo que hay hoy en esta carpeta
+
+| Archivo | Qué es |
+|---|---|
+| `logo.png` | El logotipo, recortado y con fondo transparente. Es el que usa la aplicación. |
+| `fondo.jpg` | La fotografía del Palacio de la Luz, reducida para la web. Es la que usa la aplicación. |
+| `originales/` | Los archivos tal como se subieron, sin tocar. |
+
+Los dos archivos que usa la aplicación se derivaron de los originales, sin
+alterar la imagen en sí:
+
+- **`logo.png`** sale de `originales/logo.jpg`, que era un cuadrado de 512×512
+  donde el logotipo ocupaba apenas 377×172 en el centro y el resto era blanco.
+  A 38 píxeles de alto se habría visto de 13. Se recortó al contorno del
+  logotipo y se pasó a PNG con el blanco convertido en transparencia, porque
+  un JPEG habría dejado un rectángulo blanco en el modo oscuro. Los colores
+  del logotipo no se modificaron.
+- **`fondo.jpg`** sale de `originales/edificio.jpg`, de 2904×2008 y 618 KB,
+  reducido a 1920 píxeles de ancho y 348 KB. La aplicación pide no cachear
+  nada, así que la foto se descarga en cada visita; a la resolución en que se
+  muestra, detrás del velo, la diferencia no se ve.
+
+Si conseguís el logotipo oficial en vectorial, dejalo como `logo.svg`: gana
+sobre el PNG automáticamente y no hace falta ninguna preparación.
+
 ## Cómo preparar los archivos
 
 **El logo.** Recortado a su propio contorno, sin márgenes alrededor: la

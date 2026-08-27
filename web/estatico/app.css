@@ -41,15 +41,19 @@
 
   /* Qué tan presente está la foto institucional detrás de todo.
    *
-   * La foto se pinta entera y encima se le tiende un velo del color de la
-   * página. Estos dos números son la opacidad de ese velo arriba y abajo:
-   * cuanto más bajos, más se ve la foto. Se maneja así, y no bajándole la
-   * opacidad a la foto, porque el velo garantiza un piso de contraste
-   * cualquiera sea la fotografía que carguen: una clara y contrastada no
-   * puede volver ilegible el texto que tiene encima. */
+   * La foto se pinta entera y encima se le tienden dos velos del color de la
+   * página: uno general, que va de --velo-arriba a --velo-abajo, y otro solo
+   * detrás de la columna de contenido, --velo-columna. Así la foto se ve en
+   * los márgenes y el texto se apoya siempre sobre color plano.
+   *
+   * Cuanto más bajos los tres números, más se ve la foto. Se maneja con velos
+   * y no bajándole la opacidad a la imagen porque el velo garantiza un piso
+   * de contraste cualquiera sea la fotografía que carguen: una clara y
+   * contrastada no puede volver ilegible el texto que tiene encima. */
   --papel-rgb:    252, 252, 253;
-  --velo-arriba:  0.97;
-  --velo-abajo:   0.88;
+  --velo-arriba:  0.90;
+  --velo-abajo:   0.80;
+  --velo-columna: 0.80;
 
   --radio: 6px;
   --medida: 34rem;
@@ -86,8 +90,9 @@
     /* De noche la foto puede respirar un poco más: una imagen nocturna sobre
      * fondo oscuro no pelea con el texto como lo haría sobre fondo claro. */
     --papel-rgb:   10, 13, 18;
-    --velo-arriba: 0.94;
-    --velo-abajo:  0.80;
+    --velo-arriba: 0.86;
+    --velo-abajo:  0.66;
+    --velo-columna: 0.72;
   }
 }
 
@@ -147,6 +152,18 @@ body::after {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
+  /* Segundo velo, esta vez solo detrás de la columna de contenido, con los
+   * bordes desvanecidos para que no se note dónde empieza. La foto queda
+   * viva en los márgenes y el texto se apoya siempre sobre color plano.
+   * Esto es lo que cumple la regla del principio del archivo. */
+  background: linear-gradient(
+    90deg,
+    rgba(var(--papel-rgb), 0) 0%,
+    rgba(var(--papel-rgb), var(--velo-columna)) 11%,
+    rgba(var(--papel-rgb), var(--velo-columna)) 89%,
+    rgba(var(--papel-rgb), 0) 100%
+  );
 }
 
 .cuerpo {
@@ -429,7 +446,7 @@ code {
   padding-top: 1.25rem;
   border-top: 1px solid var(--linea);
   font-size: 0.78rem;
-  color: var(--tinta-suave);
+  color: var(--tinta-media);
 }
 
 .pie p { margin: 0; max-width: 46ch; }
