@@ -39,7 +39,7 @@ facilidad de despliegue on-premise. Cada una empujó en la misma dirección.
 ### Pocas dependencias
 
 El proyecto tiene **una sola dependencia directa**: `modernc.org/sqlite`. Todo
-lo demás —el servidor HTTP, el ruteo, el generador de números aleatorios
+lo demás —el servidor HTTP, el rEMPRESAo, el generador de números aleatorios
 criptográfico, el manejo de JSON, el registro de eventos y el framework de
 tests— viene con Go.
 
@@ -102,7 +102,7 @@ de posición ni imitaciones de la marca real.
 El nombre y la ubicación son variables de entorno, no archivos:
 
 ```yaml
-ORG_NAME: "UTE"
+ORG_NAME: "EMPRESA"
 ORG_LOCATION: "Montevideo, Uruguay"
 ```
 
@@ -368,7 +368,7 @@ del `docker-compose.yml`:
 ```bash
 # .env
 PORT=9000
-RATE_LIMIT_PER_MINUTE=30
+RATE_LIMIT_PER_MINEMPRESA=30
 TRUST_PROXY=true
 ```
 
@@ -443,11 +443,11 @@ Todo se configura con variables de entorno.
 | `BIND_ADDR` | `0.0.0.0` | Interfaz de escucha. |
 | `DB_PATH` | `/datos/comparteseguro.db` | Archivo SQLite. Tiene que estar en el volumen. |
 | `MAX_NOTE_BYTES` | `102400` | Tamaño máximo de una nota, en bytes de texto sin cifrar. Se valida en el servidor y también alimenta el contador que ve el usuario. |
-| `RATE_LIMIT_PER_MINUTE` | `20` | Enlaces por minuto que puede crear una misma IP, de forma sostenida. |
+| `RATE_LIMIT_PER_MINEMPRESA` | `20` | Enlaces por minuto que puede crear una misma IP, de forma sostenida. |
 | `RATE_LIMIT_BURST` | `10` | Ráfaga tolerada por encima de ese ritmo. |
 | `TRUST_PROXY` | `false` | Si hay un proxy inverso de confianza delante. Ver la advertencia. |
 | `LOG_FORMAT` | `texto` | `texto` o `json`. |
-| `ORG_NAME` | `UTE` | Nombre que se muestra en la cabecera. |
+| `ORG_NAME` | `EMPRESA` | Nombre que se muestra en la cabecera. |
 | `ORG_LOCATION` | `Montevideo, Uruguay` | Acompaña al nombre en la cabecera. |
 | `BRANDING_DIR` | `/marca` | Carpeta con el logo y la foto oficiales. Ver [Marca institucional](#marca-institucional). |
 
