@@ -16,6 +16,7 @@ docker compose up -d --build
 ## Índice
 
 - [El stack y por qué](#el-stack-y-por-qué)
+- [Marca institucional](#marca-institucional)
 - [Decisiones de diseño](#decisiones-de-diseño)
 - [Modelo de seguridad, en lenguaje llano](#modelo-de-seguridad-en-lenguaje-llano)
 - [Requisito ineludible: HTTPS](#requisito-ineludible-https)
@@ -78,6 +79,67 @@ montar. El único estado que vive fuera del contenedor es el archivo SQLite.
 - **Python + Flask**: necesita además un servidor WSGI de producción, y la
   imagen con el intérprete pesa varias veces más. Nada de eso es grave, pero no
   aporta nada frente a la alternativa.
+
+---
+
+## Marca institucional
+
+**El logo y la foto van en la carpeta [`marca/`](marca/).** La aplicación la lee
+al arrancar, así que se copian los archivos, se reinicia y listo: no hay que
+recompilar nada.
+
+```bash
+cp logo.svg    marca/logo.svg     # arriba a la izquierda, en las dos páginas
+cp edificio.jpg marca/fondo.jpg   # fondo tenue y fijo de toda la página
+docker compose restart
+```
+
+El repositorio **no trae ningún logo ni ninguna foto**. Mientras las ranuras
+estén vacías la aplicación se ve igual de terminada: sin logo muestra el nombre
+de la organización en texto, y sin foto el fondo queda liso. No hay marcadores
+de posición ni imitaciones de la marca real.
+
+El nombre y la ubicación son variables de entorno, no archivos:
+
+```yaml
+ORG_NAME: "UTE"
+ORG_LOCATION: "Montevideo, Uruguay"
+```
+
+Los formatos aceptados, cómo preparar cada archivo y cómo verificar que se
+tomaron están en [`marca/README.md`](marca/README.md).
+
+### Por qué una carpeta montada y no archivos dentro del binario
+
+La interfaz va embebida en el ejecutable, que es lo que hace que el despliegue
+sea un solo archivo. Si el logo también fuera embebido, cambiarlo obligaría a
+recompilar, o sea a tener Go instalado y una cadena de compilación funcionando
+en la máquina donde corre la aplicación. Con una carpeta montada, cambiar la
+marca es copiar un archivo y reiniciar un contenedor: algo que hace el equipo de
+sistemas sin depender de nadie.
+
+La aplicación igual sabe leer recursos embebidos en `web/estatico/marca/`, por
+si alguna vez conviene hornear la marca dentro de la imagen. La carpeta del
+operador siempre gana sobre lo embebido.
+
+### La foto nunca se lleva por delante al texto
+
+La foto se pinta entera y encima se le tiende un velo del color de la página,
+más denso arriba —donde están el encabezado y el titular— y más suelto abajo.
+Ese velo es lo que hace que el texto se lea **cualquiera sea la fotografía que
+carguen**: una imagen clara y contrastada no puede volver ilegible lo que tiene
+encima. Los dos números que lo gobiernan están al principio de
+`web/estatico/app.css`, en `--velo-arriba` y `--velo-abajo`: bajarlos hace que
+la foto se vea más.
+
+### El naranja institucional aparece una sola vez
+
+En toda la aplicación el naranja se usa exclusivamente en la advertencia de que
+la nota se va a destruir. Ninguna otra pantalla, ningún botón, ningún aviso lo
+usa. Por eso esa advertencia es imposible de pasar por alto sin necesidad de
+recuadros ni iconos: es el único momento de la interfaz que tiene ese color.
+
+Si en algún momento se agrega una pantalla nueva, conviene respetarlo.
 
 ---
 
@@ -385,6 +447,9 @@ Todo se configura con variables de entorno.
 | `RATE_LIMIT_BURST` | `10` | Ráfaga tolerada por encima de ese ritmo. |
 | `TRUST_PROXY` | `false` | Si hay un proxy inverso de confianza delante. Ver la advertencia. |
 | `LOG_FORMAT` | `texto` | `texto` o `json`. |
+| `ORG_NAME` | `UTE` | Nombre que se muestra en la cabecera. |
+| `ORG_LOCATION` | `Montevideo, Uruguay` | Acompaña al nombre en la cabecera. |
+| `BRANDING_DIR` | `/marca` | Carpeta con el logo y la foto oficiales. Ver [Marca institucional](#marca-institucional). |
 
 ### Advertencia sobre `TRUST_PROXY`
 
@@ -509,12 +574,18 @@ contenido no rompa nada.
 ## Estructura del proyecto
 
 ```
+├── marca/                    ← ACÁ VAN EL LOGO Y LA FOTO OFICIALES
+│   └── README.md             formatos aceptados y cómo prepararlos
 ├── cmd/comparteseguro/       arranque, señales y apagado ordenado
 ├── internal/
 │   ├── almacen/              SQLite: guardar y consumir de forma atómica
 │   ├── config/               lectura y validación de variables de entorno
 │   ├── ratelimit/            cubo de fichas por IP, en memoria
-│   └── servidor/             rutas, middlewares y handlers
+│   └── servidor/
+│       ├── servidor.go       rutas y ensamblado
+│       ├── handlers.go       endpoints
+│       ├── middleware.go     cabeceras, registro seguro, IP del cliente
+│       └── marca.go          resolución del logo y la foto
 ├── web/                      interfaz, embebida en el binario
 │   ├── index.html            crear una nota
 │   ├── nota.html             pantalla intermedia y contenido revelado
@@ -535,5 +606,6 @@ contenido no rompa nada.
 | `GET /n/{id}` | Pantalla intermedia. **No consulta la base ni consume nada.** |
 | `POST /api/notas` | Guarda una nota cifrada. Devuelve solo el identificador. |
 | `POST /api/notas/{id}/consumir` | Entrega el contenido y lo borra, en una sola operación. |
+| `GET /marca/{archivo}` | Logo y foto institucional. Solo responde por las ranuras resueltas al arrancar. |
 | `GET /salud` | Comprobación de estado, para Docker y para monitoreo. |
 | `GET /robots.txt` | Prohíbe la indexación. |

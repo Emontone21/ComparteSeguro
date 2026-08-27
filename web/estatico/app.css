@@ -1,54 +1,93 @@
-/* Comparte Seguro — hoja de estilos única, sin dependencias externas. */
+/* Comparte Seguro — hoja de estilos única, sin dependencias externas.
+ *
+ * Dos reglas gobiernan todo lo que sigue:
+ *
+ * 1. El naranja institucional aparece UNA sola vez en toda la aplicación: en
+ *    la advertencia de que la nota se va a destruir. Nada más lo usa. Por eso
+ *    esa advertencia es imposible de pasar por alto, sin necesidad de recuadros
+ *    ni iconos.
+ *
+ * 2. Ningún texto se apoya nunca sobre la fotografía. La foto institucional
+ *    vive en una capa de fondo tenue y fija; el contenido va siempre sobre el
+ *    color plano de la página.
+ */
 
 :root {
   color-scheme: light dark;
 
-  --fondo:          #f4f5f7;
-  --superficie:     #ffffff;
-  --borde:          #d8dce2;
-  --borde-fuerte:   #b9c0ca;
-  --texto:          #1c2128;
-  --texto-apagado:  #5b6472;
-  --acento:         #1f4f82;
-  --acento-vivo:    #2a6bab;
-  --acento-texto:   #ffffff;
-  --error-fondo:    #fdecec;
-  --error-borde:    #e6b4b4;
-  --error-texto:    #8a2020;
-  --ok-fondo:       #e9f5ec;
-  --ok-borde:       #b4d8bf;
-  --ok-texto:       #1e5c33;
-  --atencion-fondo: #fdf5e3;
-  --atencion-borde: #e3d3a8;
-  --atencion-texto: #6b5312;
-  --foco:           #2a6bab;
+  /* Institucional */
+  --azul:          #1240E0;
+  --azul-hondo:    #0B2FAE;
+  --azul-tenue:    #EEF2FE;
+  --naranja:       #FF7A00;  /* solo como elemento gráfico */
+  --naranja-texto: #A94F00;  /* variante legible sobre claro */
 
-  --radio: 8px;
-  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  /* Neutros */
+  --tinta:        #0D1117;
+  --tinta-media:  #59636F;
+  --tinta-suave:  #8B95A1;
+  --linea:        #E2E6EB;
+  --linea-fuerte: #C9D0D8;
+  --papel:        #FCFCFD;
+  --superficie:   #FFFFFF;
+
+  /* Estados */
+  --error-texto: #9B1C1C;
+  --error-fondo: #FDF2F2;
+  --error-linea: #F1D5D5;
+  --ok-texto:    #1B5E36;
+  --ok-fondo:    #F0F8F3;
+  --ok-linea:    #CBE5D6;
+
+  /* Qué tan presente está la foto institucional detrás de todo.
+   *
+   * La foto se pinta entera y encima se le tiende un velo del color de la
+   * página. Estos dos números son la opacidad de ese velo arriba y abajo:
+   * cuanto más bajos, más se ve la foto. Se maneja así, y no bajándole la
+   * opacidad a la foto, porque el velo garantiza un piso de contraste
+   * cualquiera sea la fotografía que carguen: una clara y contrastada no
+   * puede volver ilegible el texto que tiene encima. */
+  --papel-rgb:    252, 252, 253;
+  --velo-arriba:  0.97;
+  --velo-abajo:   0.88;
+
+  --radio: 6px;
+  --medida: 34rem;
+
+  --tipo-texto: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+                Arial, sans-serif;
+  --tipo-mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                "Liberation Mono", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo:          #14171c;
-    --superficie:     #1c2027;
-    --borde:          #2f3641;
-    --borde-fuerte:   #414b59;
-    --texto:          #e6e9ee;
-    --texto-apagado:  #a0a9b8;
-    --acento:         #4f8fd0;
-    --acento-vivo:    #6aa4de;
-    --acento-texto:   #0f1318;
-    --error-fondo:    #341c1c;
-    --error-borde:    #5c3030;
-    --error-texto:    #f0b4b4;
-    --ok-fondo:       #17301f;
-    --ok-borde:       #2c5537;
-    --ok-texto:       #a8d9ba;
-    --atencion-fondo: #322a15;
-    --atencion-borde: #574727;
-    --atencion-texto: #e0cd96;
-    --foco:           #6aa4de;
-    --sombra: 0 1px 2px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .25);
+    --azul:          #5B8CFF;
+    --azul-hondo:    #7BA4FF;
+    --azul-tenue:    #141D33;
+    --naranja:       #FF9633;
+    --naranja-texto: #FFAE63;
+
+    --tinta:        #E9EDF3;
+    --tinta-media:  #99A3B0;
+    --tinta-suave:  #6E7885;
+    --linea:        #1F262F;
+    --linea-fuerte: #303945;
+    --papel:        #0A0D12;
+    --superficie:   #11151C;
+
+    --error-texto: #F2B8B8;
+    --error-fondo: #2A1616;
+    --error-linea: #4A2626;
+    --ok-texto:    #A5D9BB;
+    --ok-fondo:    #12251A;
+    --ok-linea:    #23472F;
+
+    /* De noche la foto puede respirar un poco más: una imagen nocturna sobre
+     * fondo oscuro no pelea con el texto como lo haría sobre fondo claro. */
+    --papel-rgb:   10, 13, 18;
+    --velo-arriba: 0.94;
+    --velo-abajo:  0.80;
   }
 }
 
@@ -60,131 +99,183 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  padding: 0;
-  background: var(--fondo);
-  color: var(--texto);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-               Arial, sans-serif;
+  min-height: 100vh;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--tipo-texto);
   font-size: 16px;
-  line-height: 1.55;
-  min-height: 100vh;
+  line-height: 1.6;
 }
 
-.envoltorio {
-  max-width: 44rem;
+/* La foto institucional, fija detrás de todo.
+ * Si no hay foto cargada, --foto-institucional vale "none" y esta capa
+ * sencillamente no pinta nada. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--foto-institucional, none);
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+
+/* El velo que la deja tenue y protege la legibilidad de todo lo que va encima.
+ * Es más denso arriba, donde están el encabezado y el titular, y afloja hacia
+ * abajo, que es donde la foto puede aparecer sin molestar a nadie. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--papel-rgb), var(--velo-arriba)) 0%,
+    rgba(var(--papel-rgb), var(--velo-arriba)) 22%,
+    rgba(var(--papel-rgb), var(--velo-abajo)) 100%
+  );
+}
+
+/* --- Armazón ------------------------------------------------------------ */
+
+.pagina {
+  max-width: var(--medida);
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  padding: 2.5rem 1.5rem 2rem;
   min-height: 100vh;
-}
-
-/* --- Cabecera ---------------------------------------------------------- */
-
-.cabecera { text-align: left; }
-
-.marca {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 650;
-  letter-spacing: -0.015em;
-}
-
-.bajada {
-  margin: 0.35rem 0 0;
-  color: var(--texto-apagado);
-  font-size: 0.95rem;
-}
-
-/* --- Tarjetas ---------------------------------------------------------- */
-
-main { flex: 1; }
-
-.tarjeta {
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
+}
+
+.cuerpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2.5rem 0;
+}
+
+/* --- Encabezado --------------------------------------------------------- */
+
+.encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--linea);
 }
 
-.tarjeta-centrada {
-  text-align: center;
+.logo {
+  height: 38px;
+  width: auto;
+  max-width: 190px;
+  object-fit: contain;
+  align-self: center;
+}
+
+/* Cuando todavía no se cargó el logo oficial, el nombre va en texto. */
+.logo-texto {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--azul);
+}
+
+.sede {
+  font-size: 0.78rem;
+  color: var(--tinta-suave);
+}
+
+/* --- Titular ------------------------------------------------------------ */
+
+.titular h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.entrada {
+  margin: 0.6rem 0 0;
+  font-size: 1rem;
+  color: var(--tinta-media);
+}
+
+/* --- Secciones ---------------------------------------------------------- */
+
+.paso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.paso-centrado {
   align-items: center;
-  gap: 1.25rem;
-  padding: 2.25rem 1.5rem;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
 }
 
-.titulo-seccion {
-  margin: 0;
-  font-size: 1.1rem;
+.rotulo {
+  font-size: 0.7rem;
   font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
 }
 
-/* --- Texto ------------------------------------------------------------- */
-
-.etiqueta {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.texto-apoyo {
+.apoyo {
   margin: 0;
-  color: var(--texto-apagado);
   font-size: 0.92rem;
-  max-width: 44ch;
+  color: var(--tinta-media);
+  max-width: 42ch;
 }
 
-.tarjeta:not(.tarjeta-centrada) .texto-apoyo { max-width: none; }
+.paso-centrado .apoyo { max-width: 38ch; }
 
-.texto-menor { font-size: 0.85rem; }
+.apoyo-menor { font-size: 0.84rem; }
+
+/* --- La única aparición del naranja institucional ----------------------- */
 
 .advertencia {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
   font-weight: 600;
-  color: var(--atencion-texto);
-  background: var(--atencion-fondo);
-  border: 1px solid var(--atencion-borde);
-  border-radius: var(--radio);
-  padding: 0.9rem 1.1rem;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--naranja-texto);
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--naranja);
 }
 
-.advertencia-apagada {
-  color: var(--texto-apagado);
-  background: transparent;
-  border-color: var(--borde);
+/* El contrapunto: cuando ya no hay nada, el mismo lugar queda apagado. */
+.sin-nota {
+  margin: 0;
+  font-size: clamp(1.15rem, 3.5vw, 1.35rem);
   font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tinta-media);
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--linea-fuerte);
 }
 
-code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-               "Liberation Mono", monospace;
-  font-size: 0.9em;
-  background: var(--fondo);
-  border: 1px solid var(--borde);
-  border-radius: 4px;
-  padding: 0.05em 0.35em;
-}
-
-/* --- Campos ------------------------------------------------------------ */
+/* --- Campos ------------------------------------------------------------- */
 
 textarea,
 input[type="text"] {
   width: 100%;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-               "Liberation Mono", monospace;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--texto);
-  background: var(--fondo);
-  border: 1px solid var(--borde-fuerte);
+  font-family: var(--tipo-mono);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--tinta);
+  background: var(--superficie);
+  border: 1px solid var(--linea-fuerte);
   border-radius: var(--radio);
-  padding: 0.7rem 0.8rem;
+  padding: 0.75rem 0.85rem;
 }
 
 textarea {
@@ -192,73 +283,79 @@ textarea {
   min-height: 9rem;
 }
 
+textarea::placeholder { color: var(--tinta-suave); }
+
 input[type="text"][readonly] {
-  cursor: text;
-  overflow-x: auto;
   white-space: nowrap;
+  overflow-x: auto;
 }
 
 textarea:focus-visible,
 input:focus-visible,
 .boton:focus-visible,
-.contenido:focus-visible {
-  outline: 2px solid var(--foco);
+.contenido-nota:focus-visible {
+  outline: 2px solid var(--azul);
   outline-offset: 2px;
 }
 
-/* --- Botones ----------------------------------------------------------- */
+/* --- Botones ------------------------------------------------------------ */
 
 .boton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
   font: inherit;
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  font-weight: 550;
   line-height: 1.2;
-  padding: 0.65rem 1.2rem;
-  border-radius: var(--radio);
+  padding: 0.7rem 1.35rem;
   border: 1px solid transparent;
-  cursor: pointer;
+  border-radius: var(--radio);
+  background: var(--azul);
+  color: #FFFFFF;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color .12s ease, border-color .12s ease;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
 
-.boton-primario {
-  background: var(--acento);
-  color: var(--acento-texto);
-}
+.boton:hover:not(:disabled) { background: var(--azul-hondo); }
 
-.boton-primario:hover:not(:disabled) { background: var(--acento-vivo); }
-
-.boton-secundario {
-  background: transparent;
-  color: var(--texto);
-  border-color: var(--borde-fuerte);
-  align-self: flex-start;
-}
-
-.boton-secundario:hover:not(:disabled) { border-color: var(--texto-apagado); }
-
-.tarjeta-centrada .boton-secundario { align-self: center; }
-
-.boton-ancho {
-  width: 100%;
-  max-width: 18rem;
-  padding-block: 0.8rem;
-  font-size: 1rem;
-}
-
+/* El estado deshabilitado se resuelve con colores propios y no bajando la
+ * opacidad: sobre fondo oscuro, un botón traslúcido queda ilegible. */
 .boton:disabled {
-  opacity: 0.55;
+  background: var(--linea);
+  color: var(--tinta-suave);
+  border-color: transparent;
   cursor: not-allowed;
 }
 
-/* --- Composición de filas ---------------------------------------------- */
+.boton-plano {
+  background: transparent;
+  color: var(--azul);
+  border-color: var(--linea-fuerte);
+}
 
-.fila-pie {
+.boton-plano:hover:not(:disabled) {
+  background: var(--azul-tenue);
+  border-color: var(--azul);
+}
+
+.boton-ancho {
+  min-width: 13rem;
+  padding-block: 0.85rem;
+  font-size: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .boton { color: #08101F; }
+  .boton-plano { color: var(--azul); }
+  .boton:disabled { color: var(--tinta-suave); }
+}
+
+/* --- Composición de filas ----------------------------------------------- */
+
+.barra {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -267,8 +364,8 @@ input:focus-visible,
 }
 
 .contador {
-  color: var(--texto-apagado);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  color: var(--tinta-suave);
   font-variant-numeric: tabular-nums;
 }
 
@@ -285,71 +382,79 @@ input:focus-visible,
 
 .fila-enlace input { flex: 1; min-width: 0; }
 
-/* --- Contenido revelado ------------------------------------------------ */
+/* --- Contenido revelado ------------------------------------------------- */
 
-.contenido {
+.contenido-nota {
   margin: 0;
-  padding: 1rem;
-  background: var(--fondo);
-  border: 1px solid var(--borde-fuerte);
+  padding: 1rem 1.1rem;
+  background: var(--superficie);
+  border: 1px solid var(--linea-fuerte);
   border-radius: var(--radio);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-               "Liberation Mono", monospace;
+  font-family: var(--tipo-mono);
   font-size: 0.95rem;
-  line-height: 1.55;
+  line-height: 1.65;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  max-height: 60vh;
+  max-height: 55vh;
   overflow-y: auto;
 }
 
-/* --- Avisos ------------------------------------------------------------ */
+/* --- Avisos ------------------------------------------------------------- */
 
-.aviso {
+.nota-aviso {
   margin: 0;
-  padding: 0.75rem 0.9rem;
-  border-radius: var(--radio);
+  padding: 0.7rem 0.85rem;
   border: 1px solid;
-  font-size: 0.9rem;
+  border-radius: var(--radio);
+  font-size: 0.88rem;
 }
 
-.aviso-error     { background: var(--error-fondo);    border-color: var(--error-borde);    color: var(--error-texto); }
-.aviso-ok        { background: var(--ok-fondo);       border-color: var(--ok-borde);       color: var(--ok-texto); }
-.aviso-atencion  { background: var(--atencion-fondo); border-color: var(--atencion-borde); color: var(--atencion-texto); }
+.nota-error { background: var(--error-fondo); border-color: var(--error-linea); color: var(--error-texto); }
+.nota-ok    { background: var(--ok-fondo);    border-color: var(--ok-linea);    color: var(--ok-texto); }
 
-.aviso code { background: transparent; border: none; padding: 0; }
+code {
+  font-family: var(--tipo-mono);
+  font-size: 0.88em;
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+  background: var(--azul-tenue);
+  color: inherit;
+}
 
-/* --- Pie --------------------------------------------------------------- */
+.nota-aviso code { background: rgba(0, 0, 0, 0.06); }
+
+/* --- Pie ---------------------------------------------------------------- */
 
 .pie {
-  color: var(--texto-apagado);
-  font-size: 0.82rem;
-  border-top: 1px solid var(--borde);
-  padding-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.78rem;
+  color: var(--tinta-suave);
 }
 
-.pie p { margin: 0; }
+.pie p { margin: 0; max-width: 46ch; }
 
-/* --- Utilidades -------------------------------------------------------- */
+/* --- Utilidades --------------------------------------------------------- */
 
 .oculto { display: none !important; }
 
-/* --- Móvil ------------------------------------------------------------- */
+/* --- Móvil -------------------------------------------------------------- */
 
 @media (max-width: 34rem) {
-  .envoltorio { padding: 1.25rem 1rem 2rem; }
-  .tarjeta { padding: 1.15rem; }
-  .tarjeta-centrada { padding: 1.75rem 1.15rem; }
-  .marca { font-size: 1.4rem; }
+  .pagina { padding: 1.75rem 1.15rem 1.5rem; }
+  .cuerpo { padding: 1.75rem 0; gap: 1.75rem; }
 
-  .fila-pie { flex-direction: column; align-items: stretch; }
-  .fila-pie .boton { width: 100%; }
-  .fila-pie .contador { order: -1; }
+  .logo { height: 32px; }
+  .sede { display: none; }
+
+  .barra { flex-direction: column; align-items: stretch; }
+  .barra .boton { width: 100%; }
+  .barra .contador { order: -1; }
 
   .fila-enlace { flex-direction: column; }
-  .boton-ancho, .boton-secundario { max-width: none; width: 100%; }
+  .boton-ancho, .boton-plano { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
 }

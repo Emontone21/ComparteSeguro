@@ -98,6 +98,8 @@ func etiquetaRuta(ruta string) string {
 		return "/n/{id}"
 	case strings.HasPrefix(ruta, "/estatico/"):
 		return "/estatico/*"
+	case strings.HasPrefix(ruta, "/marca/"):
+		return "/marca/*"
 	default:
 		return "(otra)"
 	}

@@ -42,6 +42,8 @@ func ejecutar() error {
 		"peticiones_por_minuto", cfg.PeticionesPorMinuto,
 		"rafaga", cfg.Rafaga,
 		"confiar_en_proxy", cfg.ConfiarEnProxy,
+		"organizacion", cfg.Organizacion,
+		"directorio_marca", cfg.DirectorioMarca,
 	)
 
 	if dir := filepath.Dir(cfg.RutaDB); dir != "" && dir != "." {
@@ -63,6 +65,9 @@ func ejecutar() error {
 		PeticionesPorMinuto: cfg.PeticionesPorMinuto,
 		Rafaga:              cfg.Rafaga,
 		ConfiarEnProxy:      cfg.ConfiarEnProxy,
+		Organizacion:        cfg.Organizacion,
+		Ubicacion:           cfg.Ubicacion,
+		DirectorioMarca:     cfg.DirectorioMarca,
 	})
 	if err != nil {
 		return err

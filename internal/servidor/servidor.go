@@ -43,6 +43,14 @@ type Opciones struct {
 	PeticionesPorMinuto float64
 	Rafaga              int
 	ConfiarEnProxy      bool
+
+	// Organizacion y Ubicacion se muestran en la cabecera.
+	Organizacion string
+	Ubicacion    string
+	// DirectorioMarca es la carpeta del operador con el logo y las fotos
+	// oficiales. Vacía significa usar lo que viene en el binario.
+	DirectorioMarca string
+
 	// Reloj permite fijar el tiempo en las pruebas. Si es nil, se usa time.Now.
 	Reloj func() time.Time
 }
@@ -57,10 +65,20 @@ type Servidor struct {
 	confiarEnProxy bool
 	reloj          func() time.Time
 
+	marca         Marca
+	recursosMarca map[string]recursoDeMarca
+	hojaMarca     []byte
+
 	paginaInicio []byte
 	paginaNota   []byte
 
 	manejador http.Handler
+}
+
+// datosDePagina es lo que reciben las plantillas de las dos páginas.
+type datosDePagina struct {
+	MaxBytesNota int
+	Marca        Marca
 }
 
 // Nuevo construye el servidor y deja las rutas listas.
@@ -88,6 +106,12 @@ func Nuevo(o Opciones) (*Servidor, error) {
 		reloj:          o.Reloj,
 	}
 
+	marca, recursos, err := resolverMarca(o.DirectorioMarca, o.Organizacion, o.Ubicacion, o.Log)
+	if err != nil {
+		return nil, err
+	}
+	s.marca, s.recursosMarca, s.hojaMarca = marca, recursos, hojaDeMarca(marca)
+
 	if err := s.prepararPaginas(); err != nil {
 		return nil, err
 	}
@@ -107,28 +131,38 @@ func limiteDeCuerpo(maxBytesNota int) int64 {
 	return int64(enBase64 + margenJSON)
 }
 
-// prepararPaginas renderiza una sola vez las páginas embebidas. La de inicio
-// lleva inyectado el límite de tamaño para que el contador del navegador y la
-// validación del servidor no puedan quedar desincronizados.
+// prepararPaginas renderiza una sola vez las dos páginas embebidas.
+//
+// La de inicio lleva inyectado el límite de tamaño para que el contador del
+// navegador y la validación del servidor no puedan quedar desincronizados, y
+// las dos llevan la marca resuelta al arrancar.
 func (s *Servidor) prepararPaginas() error {
-	crudoInicio, err := web.Plantilla("index.html")
-	if err != nil {
-		return fmt.Errorf("servidor: leer index.html: %w", err)
-	}
-	plantilla, err := template.New("index").Parse(string(crudoInicio))
-	if err != nil {
-		return fmt.Errorf("servidor: interpretar index.html: %w", err)
-	}
-	var buf bytes.Buffer
-	if err := plantilla.Execute(&buf, struct{ MaxBytesNota int }{s.maxBytesNota}); err != nil {
-		return fmt.Errorf("servidor: renderizar index.html: %w", err)
-	}
-	s.paginaInicio = buf.Bytes()
+	datos := datosDePagina{MaxBytesNota: s.maxBytesNota, Marca: s.marca}
 
-	if s.paginaNota, err = web.Plantilla("nota.html"); err != nil {
-		return fmt.Errorf("servidor: leer nota.html: %w", err)
+	var err error
+	if s.paginaInicio, err = renderizar("index.html", datos); err != nil {
+		return err
+	}
+	if s.paginaNota, err = renderizar("nota.html", datos); err != nil {
+		return err
 	}
 	return nil
+}
+
+func renderizar(nombre string, datos datosDePagina) ([]byte, error) {
+	crudo, err := web.Archivo(nombre)
+	if err != nil {
+		return nil, fmt.Errorf("servidor: leer %s: %w", nombre, err)
+	}
+	plantilla, err := template.New(nombre).Parse(string(crudo))
+	if err != nil {
+		return nil, fmt.Errorf("servidor: interpretar %s: %w", nombre, err)
+	}
+	var buf bytes.Buffer
+	if err := plantilla.Execute(&buf, datos); err != nil {
+		return nil, fmt.Errorf("servidor: renderizar %s: %w", nombre, err)
+	}
+	return buf.Bytes(), nil
 }
 
 func (s *Servidor) prepararRutas() error {
@@ -150,6 +184,8 @@ func (s *Servidor) prepararRutas() error {
 
 	// Estáticos y utilidades.
 	mux.Handle("GET /estatico/", http.StripPrefix("/estatico/", http.FileServerFS(estaticos)))
+	mux.HandleFunc("GET /marca/marca.css", s.hojaDeEstilosDeMarca)
+	mux.HandleFunc("GET /marca/{archivo}", s.recursoDeMarca)
 	mux.HandleFunc("GET /robots.txt", s.robots)
 	mux.HandleFunc("GET /salud", s.salud)
 

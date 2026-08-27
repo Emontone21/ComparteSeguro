@@ -5,74 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="referrer" content="no-referrer">
-<title>Comparte Seguro</title>
+<title>Comparte Seguro · {{.Marca.Organizacion}}</title>
 <link rel="stylesheet" href="/estatico/app.css">
+<link rel="stylesheet" href="/marca/marca.css">
 <link rel="icon" href="/estatico/icono.svg" type="image/svg+xml">
 <script type="module" src="/estatico/ver.js"></script>
 </head>
 <body>
 
-<div class="envoltorio">
+<div class="pagina">
 
-  <header class="cabecera">
-    <h1 class="marca">Comparte&nbsp;Seguro</h1>
+  <header class="encabezado">
+    {{if .Marca.RutaLogo}}
+      <img class="logo" src="{{.Marca.RutaLogo}}" alt="{{.Marca.Organizacion}}">
+    {{else}}
+      <span class="logo-texto">{{.Marca.Organizacion}}</span>
+    {{end}}
+    {{if .Marca.Ubicacion}}<span class="sede">{{.Marca.Ubicacion}}</span>{{end}}
   </header>
 
-  <main>
+  <main class="cuerpo">
+
     <noscript>
-      <p class="aviso aviso-error">
+      <p class="nota-aviso nota-error">
         Esta nota se descifra dentro de tu navegador, así que necesita
         JavaScript activado para poder leerse.
       </p>
     </noscript>
 
-    <div id="sin-webcrypto" class="aviso aviso-error oculto">
+    <div id="sin-webcrypto" class="nota-aviso nota-error oculto">
       <strong>Este navegador no puede descifrar en esta página.</strong>
-      El descifrado solo está disponible sobre HTTPS (o en <code>localhost</code>).
+      El descifrado solo está disponible sobre HTTPS o en <code>localhost</code>.
       Avisale al equipo de sistemas.
     </div>
 
     <!-- Paso 1: la advertencia previa -->
-    <section id="paso-aviso" class="tarjeta tarjeta-centrada">
+    <section id="paso-aviso" class="paso paso-centrado">
       <p class="advertencia">Esta nota se destruirá al abrirla</p>
-      <p class="texto-apoyo">
+      <p class="apoyo">
         Vas a poder leerla una sola vez. En cuanto presiones el botón, el
         servidor la borra: ni vos ni nadie va a poder volver a abrir este
-        enlace. Tenés que estar en condiciones de guardar el contenido ahora.
+        enlace.
       </p>
-      <button id="ver" type="button" class="boton boton-primario boton-ancho">
-        Ver nota
-      </button>
+      <button id="ver" type="button" class="boton boton-ancho">Ver nota</button>
     </section>
 
     <!-- Paso 2: el contenido revelado -->
-    <section id="paso-nota" class="tarjeta oculto">
-      <h2 class="titulo-seccion">Contenido de la nota</h2>
-      <pre id="contenido" class="contenido" tabindex="0"></pre>
+    <section id="paso-nota" class="paso oculto">
+      <span class="rotulo">Contenido de la nota</span>
+      <pre id="contenido" class="contenido-nota" tabindex="0"></pre>
 
-      <div class="fila-pie">
-        <span class="texto-menor">La nota ya fue destruida en el servidor.</span>
-        <button id="copiar" type="button" class="boton boton-primario">Copiar</button>
+      <div class="barra">
+        <span class="apoyo apoyo-menor">Ya fue destruida en el servidor.</span>
+        <button id="copiar" type="button" class="boton">Copiar</button>
       </div>
 
-      <p id="aviso-copia" class="aviso aviso-ok oculto" role="status"></p>
+      <p id="aviso-copia" class="nota-aviso nota-ok oculto" role="status"></p>
 
-      <p class="aviso aviso-atencion">
+      <p class="apoyo">
         Si cerrás o recargás esta página el contenido se pierde para siempre.
         Guardalo donde corresponda antes de irte.
       </p>
     </section>
 
     <!-- Paso 3: nota inexistente, ya leída, o enlace roto -->
-    <section id="paso-error" class="tarjeta tarjeta-centrada oculto">
-      <p id="mensaje-error" class="advertencia advertencia-apagada">
-        Esta nota ya fue leída o no existe
-      </p>
-      <p class="texto-apoyo">
-        Pedile a quien te la envió que genere un enlace nuevo.
-      </p>
-      <a class="boton boton-secundario" href="/">Crear una nota</a>
+    <section id="paso-error" class="paso paso-centrado oculto">
+      <p id="mensaje-error" class="sin-nota">Esta nota ya fue leída o no existe</p>
+      <p class="apoyo">Pedile a quien te la envió que genere un enlace nuevo.</p>
+      <a class="boton boton-plano" href="/">Crear una nota</a>
     </section>
+
   </main>
 
   <footer class="pie">

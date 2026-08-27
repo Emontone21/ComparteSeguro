@@ -5,79 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="referrer" content="no-referrer">
-<title>Comparte Seguro</title>
+<title>Comparte Seguro · {{.Marca.Organizacion}}</title>
 <link rel="stylesheet" href="/estatico/app.css">
+<link rel="stylesheet" href="/marca/marca.css">
 <link rel="icon" href="/estatico/icono.svg" type="image/svg+xml">
 <script type="module" src="/estatico/crear.js"></script>
 </head>
 <body data-limite-bytes="{{.MaxBytesNota}}">
 
-<div class="envoltorio">
+<div class="pagina">
 
-  <header class="cabecera">
-    <h1 class="marca">Comparte&nbsp;Seguro</h1>
-    <p class="bajada">Enlaces de un solo uso para contraseñas y notas internas.</p>
+  <header class="encabezado">
+    {{if .Marca.RutaLogo}}
+      <img class="logo" src="{{.Marca.RutaLogo}}" alt="{{.Marca.Organizacion}}">
+    {{else}}
+      <span class="logo-texto">{{.Marca.Organizacion}}</span>
+    {{end}}
+    {{if .Marca.Ubicacion}}<span class="sede">{{.Marca.Ubicacion}}</span>{{end}}
   </header>
 
-  <main>
+  <main class="cuerpo">
+
+    <div class="titular">
+      <h1>Comparte Seguro</h1>
+      <p class="entrada">Enlaces de un solo uso para contraseñas y notas internas.</p>
+    </div>
+
     <noscript>
-      <p class="aviso aviso-error">
+      <p class="nota-aviso nota-error">
         Esta herramienta cifra la nota dentro de tu navegador, así que necesita
         JavaScript activado para funcionar.
       </p>
     </noscript>
 
-    <div id="sin-webcrypto" class="aviso aviso-error oculto">
+    <div id="sin-webcrypto" class="nota-aviso nota-error oculto">
       <strong>Este navegador no puede cifrar en esta página.</strong>
-      El cifrado del navegador solo está disponible sobre HTTPS (o en
-      <code>localhost</code>). Avisale al equipo de sistemas: hay que servir
-      Comparte Seguro detrás de HTTPS.
+      El cifrado del navegador solo está disponible sobre HTTPS o en
+      <code>localhost</code>. Avisale al equipo de sistemas.
     </div>
 
     <!-- Paso 1: escribir la nota -->
-    <section id="paso-redactar" class="tarjeta">
-      <label class="etiqueta" for="texto">Nota o contraseña a compartir</label>
-      <textarea id="texto" rows="8" spellcheck="false" autocomplete="off"
+    <section id="paso-redactar" class="paso">
+      <label class="rotulo" for="texto">Nota o contraseña</label>
+      <textarea id="texto" rows="7" spellcheck="false" autocomplete="off"
                 placeholder="Escribí acá lo que querés compartir."
                 aria-describedby="contador"></textarea>
 
-      <div class="fila-pie">
+      <div class="barra">
         <span id="contador" class="contador">0 / 100 KB</span>
-        <button id="generar" type="button" class="boton boton-primario">
-          Generar enlace
-        </button>
+        <button id="generar" type="button" class="boton">Generar enlace</button>
       </div>
 
-      <p id="error-crear" class="aviso aviso-error oculto" role="alert"></p>
+      <p id="error-crear" class="nota-aviso nota-error oculto" role="alert"></p>
     </section>
 
     <!-- Paso 2: el enlace generado -->
-    <section id="paso-enlace" class="tarjeta oculto">
-      <h2 class="titulo-seccion">Tu enlace está listo</h2>
-      <p class="texto-apoyo">
-        Compartilo por el canal que uses habitualmente. Quien lo abra va a poder
-        leer la nota <strong>una sola vez</strong>; después el enlace deja de
-        servir para siempre.
-      </p>
+    <section id="paso-enlace" class="paso oculto">
+      <span class="rotulo">Enlace generado</span>
 
       <div class="fila-enlace">
         <input id="enlace" type="text" readonly spellcheck="false"
                aria-label="Enlace de un solo uso">
-        <button id="copiar" type="button" class="boton boton-primario">Copiar</button>
+        <button id="copiar" type="button" class="boton">Copiar</button>
       </div>
 
-      <p id="aviso-copia" class="aviso aviso-ok oculto" role="status"></p>
+      <p id="aviso-copia" class="nota-aviso nota-ok oculto" role="status"></p>
 
-      <p class="texto-apoyo texto-menor">
-        La clave para descifrar la nota viaja dentro del propio enlace, después
-        del signo <code>#</code>, y nunca llega a este servidor. Copiá el enlace
+      <p class="apoyo">
+        Quien lo abra va a poder leer la nota <strong>una sola vez</strong>.
+        Después el enlace deja de servir para siempre.
+      </p>
+      <p class="apoyo apoyo-menor">
+        La clave para descifrarla viaja dentro del propio enlace, después del
+        signo <code>#</code>, y nunca llega a este servidor. Copiá el enlace
         entero o no se va a poder leer.
       </p>
 
-      <button id="otra" type="button" class="boton boton-secundario">
-        Crear otra nota
-      </button>
+      <button id="otra" type="button" class="boton boton-plano">Crear otra nota</button>
     </section>
+
   </main>
 
   <footer class="pie">

@@ -28,6 +28,19 @@ type Config struct {
 	ConfiarEnProxy bool
 	// FormatoLog es "texto" o "json". Variable LOG_FORMAT.
 	FormatoLog string
+
+	// --- Marca institucional ---
+
+	// Organizacion es el nombre que se muestra en la cabecera.
+	// Variable ORG_NAME.
+	Organizacion string
+	// Ubicacion acompaña al nombre en la cabecera. Variable ORG_LOCATION.
+	Ubicacion string
+	// DirectorioMarca es una carpeta con el logo y las fotos oficiales. Si
+	// está vacía se usan los recursos incluidos en el binario. Permite
+	// personalizar la aplicación sin recompilarla: se monta la carpeta como
+	// volumen y se reinicia. Variable BRANDING_DIR.
+	DirectorioMarca string
 }
 
 // Valores por omisión, pensados para un despliegue interno típico.
@@ -40,6 +53,9 @@ const (
 	rafagaPorOmision        = 10
 	formatoLogPorOmision    = "texto"
 	maxBytesNotaTopeAbsurdo = 8 * 1024 * 1024
+
+	organizacionPorOmision = "UTE"
+	ubicacionPorOmision    = "Montevideo, Uruguay"
 )
 
 // Cargar arma la configuración a partir del entorno, validando cada valor.
@@ -52,6 +68,9 @@ func Cargar() (Config, error) {
 		PeticionesPorMinuto: porMinutoPorOmision,
 		Rafaga:              rafagaPorOmision,
 		FormatoLog:          strings.ToLower(cadena("LOG_FORMAT", formatoLogPorOmision)),
+		Organizacion:        cadena("ORG_NAME", organizacionPorOmision),
+		Ubicacion:           cadena("ORG_LOCATION", ubicacionPorOmision),
+		DirectorioMarca:     strings.TrimSpace(os.Getenv("BRANDING_DIR")),
 	}
 
 	var err error

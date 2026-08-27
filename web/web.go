@@ -12,12 +12,12 @@ import (
 //go:embed index.html nota.html estatico
 var archivos embed.FS
 
-// Plantilla devuelve el contenido de una página del sitio.
-func Plantilla(nombre string) ([]byte, error) {
+// Archivo devuelve el contenido de un archivo embebido.
+func Archivo(nombre string) ([]byte, error) {
 	return archivos.ReadFile(nombre)
 }
 
-// Estaticos es el subárbol con CSS y JavaScript.
+// Estaticos es el subárbol con CSS, JavaScript e imágenes.
 func Estaticos() (fs.FS, error) {
 	return fs.Sub(archivos, "estatico")
 }

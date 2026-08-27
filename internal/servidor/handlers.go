@@ -52,6 +52,28 @@ func (s *Servidor) mostrarPaginaDeNota(w http.ResponseWriter, r *http.Request) {
 	w.Write(s.paginaNota)
 }
 
+// hojaDeEstilosDeMarca entrega la hoja generada al arrancar, que expone la
+// foto institucional como variable CSS.
+func (s *Servidor) hojaDeEstilosDeMarca(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/css; charset=utf-8")
+	w.Write(s.hojaMarca)
+}
+
+// recursoDeMarca entrega el logo o la foto institucional.
+//
+// Solo responde por los nombres que se resolvieron al arrancar: la búsqueda es
+// una consulta exacta a un mapa, así que no hay forma de pedir un archivo de
+// fuera de la carpeta de marca por más que se disfrace la ruta.
+func (s *Servidor) recursoDeMarca(w http.ResponseWriter, r *http.Request) {
+	recurso, existe := s.recursosMarca[r.PathValue("archivo")]
+	if !existe {
+		http.NotFound(w, r)
+		return
+	}
+	w.Header().Set("Content-Type", recurso.tipo)
+	w.Write(recurso.contenido)
+}
+
 func (s *Servidor) robots(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Write([]byte("User-agent: *\nDisallow: /\n"))

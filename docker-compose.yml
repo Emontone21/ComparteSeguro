@@ -31,11 +31,20 @@ services:
       # "texto" o "json".
       LOG_FORMAT: "${LOG_FORMAT:-texto}"
 
+      # Marca institucional. El logo y la foto salen de la carpeta ./marca del
+      # repositorio, montada más abajo; ver marca/README.md.
+      ORG_NAME: "${ORG_NAME:-UTE}"
+      ORG_LOCATION: "${ORG_LOCATION:-Montevideo, Uruguay}"
+      BRANDING_DIR: "/marca"
+
     volumes:
       # Las notas viven acá. Es lo único que hay que respaldar (y en general
       # ni siquiera hace falta: son notas pendientes de leer, cifradas, y el
       # servidor no tiene con qué descifrarlas).
       - datos:/datos
+      # El logo y la foto oficiales. Se leen al arrancar, en solo lectura.
+      # Después de cambiarlos hay que reiniciar: docker compose restart
+      - ./marca:/marca:ro
 
     # El contenedor no necesita escribir en ningún lado salvo en /datos.
     read_only: true

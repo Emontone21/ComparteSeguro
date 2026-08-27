@@ -53,6 +53,9 @@ type opcionesPrueba struct {
 	peticionesPorMinuto float64
 	rafaga              int
 	confiarEnProxy      bool
+	organizacion        string
+	ubicacion           string
+	directorioMarca     string
 }
 
 func montar(t *testing.T, ajustes ...func(*opcionesPrueba)) *entorno {
@@ -64,6 +67,8 @@ func montar(t *testing.T, ajustes ...func(*opcionesPrueba)) *entorno {
 		// ejercitan lo bajan a mano.
 		peticionesPorMinuto: 1_000_000,
 		rafaga:              1_000_000,
+		organizacion:        "UTE",
+		ubicacion:           "Montevideo, Uruguay",
 	}
 	for _, ajustar := range ajustes {
 		ajustar(&o)
@@ -83,6 +88,9 @@ func montar(t *testing.T, ajustes ...func(*opcionesPrueba)) *entorno {
 		PeticionesPorMinuto: o.peticionesPorMinuto,
 		Rafaga:              o.rafaga,
 		ConfiarEnProxy:      o.confiarEnProxy,
+		Organizacion:        o.organizacion,
+		Ubicacion:           o.ubicacion,
+		DirectorioMarca:     o.directorioMarca,
 	})
 	if err != nil {
 		t.Fatalf("no se pudo construir el servidor: %v", err)
