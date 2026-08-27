@@ -1,0 +1,64 @@
+# Comparte Seguro — despliegue on-premise.
+#
+#   docker compose up -d --build
+#
+# El puerto se cambia con la variable PORT (o con un archivo .env al lado de
+# este). Ver README.md para el resto de la configuración.
+
+services:
+  comparteseguro:
+    build: .
+    image: comparteseguro:latest
+    container_name: comparteseguro
+    restart: unless-stopped
+
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+
+    environment:
+      # Puerto de escucha, dentro y fuera del contenedor.
+      PORT: "${PORT:-8080}"
+      # Archivo SQLite, sobre el volumen de abajo.
+      DB_PATH: "/datos/comparteseguro.db"
+      # Tamaño máximo de una nota, en bytes de texto en claro.
+      MAX_NOTE_BYTES: "${MAX_NOTE_BYTES:-102400}"
+      # Límite de creación de enlaces por IP.
+      RATE_LIMIT_PER_MINUTE: "${RATE_LIMIT_PER_MINUTE:-20}"
+      RATE_LIMIT_BURST: "${RATE_LIMIT_BURST:-10}"
+      # Poner en "true" SOLO si hay un proxy inverso de confianza delante.
+      # Ver la advertencia en el README antes de tocarlo.
+      TRUST_PROXY: "${TRUST_PROXY:-false}"
+      # "texto" o "json".
+      LOG_FORMAT: "${LOG_FORMAT:-texto}"
+
+    volumes:
+      # Las notas viven acá. Es lo único que hay que respaldar (y en general
+      # ni siquiera hace falta: son notas pendientes de leer, cifradas, y el
+      # servidor no tiene con qué descifrarlas).
+      - datos:/datos
+
+    # El contenedor no necesita escribir en ningún lado salvo en /datos.
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${PORT:-8080}/salud"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  datos:
+    name: comparteseguro-datos

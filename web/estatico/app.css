@@ -1,0 +1,355 @@
+/* Comparte Seguro — hoja de estilos única, sin dependencias externas. */
+
+:root {
+  color-scheme: light dark;
+
+  --fondo:          #f4f5f7;
+  --superficie:     #ffffff;
+  --borde:          #d8dce2;
+  --borde-fuerte:   #b9c0ca;
+  --texto:          #1c2128;
+  --texto-apagado:  #5b6472;
+  --acento:         #1f4f82;
+  --acento-vivo:    #2a6bab;
+  --acento-texto:   #ffffff;
+  --error-fondo:    #fdecec;
+  --error-borde:    #e6b4b4;
+  --error-texto:    #8a2020;
+  --ok-fondo:       #e9f5ec;
+  --ok-borde:       #b4d8bf;
+  --ok-texto:       #1e5c33;
+  --atencion-fondo: #fdf5e3;
+  --atencion-borde: #e3d3a8;
+  --atencion-texto: #6b5312;
+  --foco:           #2a6bab;
+
+  --radio: 8px;
+  --sombra: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo:          #14171c;
+    --superficie:     #1c2027;
+    --borde:          #2f3641;
+    --borde-fuerte:   #414b59;
+    --texto:          #e6e9ee;
+    --texto-apagado:  #a0a9b8;
+    --acento:         #4f8fd0;
+    --acento-vivo:    #6aa4de;
+    --acento-texto:   #0f1318;
+    --error-fondo:    #341c1c;
+    --error-borde:    #5c3030;
+    --error-texto:    #f0b4b4;
+    --ok-fondo:       #17301f;
+    --ok-borde:       #2c5537;
+    --ok-texto:       #a8d9ba;
+    --atencion-fondo: #322a15;
+    --atencion-borde: #574727;
+    --atencion-texto: #e0cd96;
+    --foco:           #6aa4de;
+    --sombra: 0 1px 2px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .25);
+  }
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+.envoltorio {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100vh;
+}
+
+/* --- Cabecera ---------------------------------------------------------- */
+
+.cabecera { text-align: left; }
+
+.marca {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+.bajada {
+  margin: 0.35rem 0 0;
+  color: var(--texto-apagado);
+  font-size: 0.95rem;
+}
+
+/* --- Tarjetas ---------------------------------------------------------- */
+
+main { flex: 1; }
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tarjeta-centrada {
+  text-align: center;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 2.25rem 1.5rem;
+}
+
+.titulo-seccion {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* --- Texto ------------------------------------------------------------- */
+
+.etiqueta {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.texto-apoyo {
+  margin: 0;
+  color: var(--texto-apagado);
+  font-size: 0.92rem;
+  max-width: 44ch;
+}
+
+.tarjeta:not(.tarjeta-centrada) .texto-apoyo { max-width: none; }
+
+.texto-menor { font-size: 0.85rem; }
+
+.advertencia {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--atencion-texto);
+  background: var(--atencion-fondo);
+  border: 1px solid var(--atencion-borde);
+  border-radius: var(--radio);
+  padding: 0.9rem 1.1rem;
+}
+
+.advertencia-apagada {
+  color: var(--texto-apagado);
+  background: transparent;
+  border-color: var(--borde);
+  font-weight: 500;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  font-size: 0.9em;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+}
+
+/* --- Campos ------------------------------------------------------------ */
+
+textarea,
+input[type="text"] {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio);
+  padding: 0.7rem 0.8rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 9rem;
+}
+
+input[type="text"][readonly] {
+  cursor: text;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+textarea:focus-visible,
+input:focus-visible,
+.boton:focus-visible,
+.contenido:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}
+
+/* --- Botones ----------------------------------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  padding: 0.65rem 1.2rem;
+  border-radius: var(--radio);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+
+.boton-primario {
+  background: var(--acento);
+  color: var(--acento-texto);
+}
+
+.boton-primario:hover:not(:disabled) { background: var(--acento-vivo); }
+
+.boton-secundario {
+  background: transparent;
+  color: var(--texto);
+  border-color: var(--borde-fuerte);
+  align-self: flex-start;
+}
+
+.boton-secundario:hover:not(:disabled) { border-color: var(--texto-apagado); }
+
+.tarjeta-centrada .boton-secundario { align-self: center; }
+
+.boton-ancho {
+  width: 100%;
+  max-width: 18rem;
+  padding-block: 0.8rem;
+  font-size: 1rem;
+}
+
+.boton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* --- Composición de filas ---------------------------------------------- */
+
+.fila-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contador {
+  color: var(--texto-apagado);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.contador-excedido {
+  color: var(--error-texto);
+  font-weight: 600;
+}
+
+.fila-enlace {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.fila-enlace input { flex: 1; min-width: 0; }
+
+/* --- Contenido revelado ------------------------------------------------ */
+
+.contenido {
+  margin: 0;
+  padding: 1rem;
+  background: var(--fondo);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* --- Avisos ------------------------------------------------------------ */
+
+.aviso {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radio);
+  border: 1px solid;
+  font-size: 0.9rem;
+}
+
+.aviso-error     { background: var(--error-fondo);    border-color: var(--error-borde);    color: var(--error-texto); }
+.aviso-ok        { background: var(--ok-fondo);       border-color: var(--ok-borde);       color: var(--ok-texto); }
+.aviso-atencion  { background: var(--atencion-fondo); border-color: var(--atencion-borde); color: var(--atencion-texto); }
+
+.aviso code { background: transparent; border: none; padding: 0; }
+
+/* --- Pie --------------------------------------------------------------- */
+
+.pie {
+  color: var(--texto-apagado);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--borde);
+  padding-top: 1rem;
+}
+
+.pie p { margin: 0; }
+
+/* --- Utilidades -------------------------------------------------------- */
+
+.oculto { display: none !important; }
+
+/* --- Móvil ------------------------------------------------------------- */
+
+@media (max-width: 34rem) {
+  .envoltorio { padding: 1.25rem 1rem 2rem; }
+  .tarjeta { padding: 1.15rem; }
+  .tarjeta-centrada { padding: 1.75rem 1.15rem; }
+  .marca { font-size: 1.4rem; }
+
+  .fila-pie { flex-direction: column; align-items: stretch; }
+  .fila-pie .boton { width: 100%; }
+  .fila-pie .contador { order: -1; }
+
+  .fila-enlace { flex-direction: column; }
+  .boton-ancho, .boton-secundario { max-width: none; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

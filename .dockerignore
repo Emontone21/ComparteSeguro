@@ -1,0 +1,18 @@
+# Todo lo que no hace falta para compilar la imagen.
+.git
+.gitignore
+.dockerignore
+README.md
+LICENSE
+docker-compose.yml
+Dockerfile
+
+# Bases de datos locales y sus archivos auxiliares.
+*.db
+*.db-wal
+*.db-shm
+datos/
+
+# Binarios compilados a mano.
+comparteseguro
+/salida/

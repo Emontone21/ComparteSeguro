@@ -1,0 +1,14 @@
+# Bases de datos locales y sus archivos auxiliares de SQLite.
+*.db
+*.db-wal
+*.db-shm
+datos/
+
+# Binario compilado.
+/comparteseguro
+
+# Configuración local de despliegue.
+.env
+
+# Resultados de cobertura.
+*.out
